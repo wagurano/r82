@@ -25,8 +25,9 @@
   </div>
   <div class="field">
     <%= f.label :are_you_sure %>
-    <%= f.check_box :are_you_sure %>
-  </div>
+    <%= f.check_box :are_you_sure, {}, 'yes', 'no' %>
+<!--     < %= f.check_box :are_you_sure %>
+ -->  </div>
   <div class="actions">
     <%= f.submit %>
   </div>
