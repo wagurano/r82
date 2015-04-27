@@ -185,42 +185,45 @@ rails g model absent_date user:references
 
 rake db:migrate
 
-class User < ActiveRecord::Base
-  has_many :assent_date, autosave: true
-  validates :username, presence: true
-end
+```ruby
+    class User < ActiveRecord::Base
+        has_many :assent_date, autosave: true
+        alidates :username, presence: true
+    end
+    
+    class AbsentDate < ActiveRecord::Base
+        # 1
+        # belongs_to :user, autosave: true, validate: true
+        
+        # 2
+        belongs_to :user
+        validates_associated :user
+    end
+    
+    user1 = User.new username: "rorla"
+    user1.valid? # true
+    user1.save
+    ad1 = AbsentDate.new user: user1
+    user1.username = nil
+    user1.valid? # false
+    ad1.valid? # false
+    ad1.errors.full_messages
+    ad1.user.delete
+    ad1.valid? # true
+    
+    user2 = User.new username: "weekly"
+    user2.valid? # true
+    user2.save
+    ad2 = AbsentDate.new user: user2
+    user2.username = nil
+    user2.valid? # false
+    ad2.valid? # false
+    
+    ad2.errors.full_messages
+    ad2.user.delete 
+    ad2.valid? # false
+```
 
-class AbsentDate < ActiveRecord::Base
-  # 1
-  # belongs_to :user, autosave: true, validate: true
-
-  # 2
-  belongs_to :user
-  validates_associated :user
-end
-
-user1 = User.new username: "rorla"
-user1.valid? # true
-user1.save
-ad1 = AbsentDate.new user: user1
-user1.username = nil
-user1.valid? # false
-ad1.valid? # false
-ad1.errors.full_messages
-ad1.user.delete
-ad1.valid? # true
-
-user2 = User.new username: "weekly"
-user2.valid? # true
-user2.save
-ad2 = AbsentDate.new user: user2
-user2.username = nil
-user2.valid? # false
-ad2.valid? # false
-
-ad2.errors.full_messages
-ad2.user.delete 
-ad2.valid? # false
 
 
 ### confirmation
@@ -231,27 +234,30 @@ rake db:migrate
 
 people_controller.rb
 
-def person_params
-  params.require(:person).permit(:name, :email, :email_confimation)
-end
-
-class Person < ActiveRecord::Base
-  validates :name, :email, presence: true
-  validates :email, confirmation: true
-  validates :email_confirmation, presence: true
-end
-
-validates :email, confirmation: true
+````ruby
+    def person_params
+        params.require(:person).permit(:name, :email, :email_confimation)
+    end
+    
+    class Person < ActiveRecord::Base
+        validates :name, :email, presence: true
+        validates :email, confirmation: true
+        validates :email_confirmation, presence: true
+    end
+    
+    validates :email, confirmation: true
 validates :email_confirmation, presence: true
+````
 
 재입력하는 가상 속성에도 존재유무를 확인하는 밸리데이션을 하나 더 써야 한다.
 
-class Person < ActiveRecord::Base
-  validates :name, :email, presence: true
-  validates :email, confirmation: true
-  # validates :email_confirmation, presence: true
-end
-
+````ruby
+    class Person < ActiveRecord::Base
+        validates :name, :email, presence: true
+        validates :email, confirmation: true
+        # validates :email_confirmation, presence: true
+    end
+````
 
 / gender ex
 / rails g migration add_gender_to_person gender:string
@@ -259,7 +265,7 @@ end
 
 ### exclusion
 
-validates :name, exclustion: { in: %w(admin root) }
+````validates :name, exclustion: { in: %w(admin root) }
 
 
 rails g migration add_language_to_person language:string
@@ -267,7 +273,7 @@ rails g migration add_language_to_person language:string
 rake db:migrate
 
 person.rb
-validates :language, inclusion: { in: I18n.available_locales.map(&:to_s) }
+````validates :language, inclusion: { in: I18n.available_locales.map(&:to_s) }
 
 
 
