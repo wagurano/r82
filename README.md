@@ -1,23 +1,23 @@
 액티브 레코드 밸리데이션 실습
 ----------------------
 
-## 프로젝트 시작
+### 프로젝트 시작
 
     rails new r82 
 
-## 제품(Product) 스캐폴드 제너레이터로 제목(문자열), 설명(텍스트), 가격(정수)를 만듭니다.
+### 제품(Product) 스캐폴드 제너레이터로 제목(문자열), 설명(텍스트), 가격(정수)를 만듭니다.
 
     rails g scaffold Product title description:text value:integer
 
     rake db:migrate
 
-## 화면에 띄웁니다.
+### 화면에 띄웁니다.
 
     open http://localhost:3000
 
-## 레이아웃을 레일스캐스트 스타일로 적용합니다.
+### 레이아웃을 레일스캐스트 스타일로 적용합니다.
 
-### application.css
+#### application.css
 
 ```html
 /*
@@ -74,7 +74,7 @@ body {
 }
 ```
 
-### application.html.erb
+#### application.html.erb
 
 ```html
     <body>
@@ -94,15 +94,15 @@ body {
     </body>
 ```
 
-## 홈페이지를 제품 목록으로 설정합니다.
+### 홈페이지를 제품 목록으로 설정합니다.
 
-### routes.rb
+#### routes.rb
 
     root 'products#index'
 
-## 저장을 하면 아무것도 없습니다.
+### 저장을 하면 아무것도 없습니다.
 
-## 이치 밸리데이터를 사용합니다.
+### 이치 밸리데이터를 사용합니다.
 
 ```ruby
     class TitleValidator < ActiveModel::EachValidator
@@ -119,9 +119,9 @@ body {
     end
 ```
 
-## 사용자 동의를 선택하는 가상 필드를 만듭니다.
+### 사용자 동의를 선택하는 가상 필드를 만듭니다.
 
-### product_controller.rb
+#### product_controller.rb
 
 ```ruby
     def product_params
@@ -129,7 +129,7 @@ body {
     end
 ```
 
-### _form.html.erb
+#### _form.html.erb
 
 ```html
     <div class="field">
@@ -138,13 +138,13 @@ body {
     </div>
 ```
 
-## 가이드 예시의 이름을 가진 모델 클래스를 만듭니다.
+### 가이드 예시의 이름을 가진 모델 클래스를 만듭니다.
 
     rails g scaffold Person name
     
     rake db:migrate
 
-### person.rb
+#### person.rb
 
 ```ruby
     class Person < ActiveRecord::Base
@@ -152,7 +152,7 @@ body {
     end
 ```
 
-## 참고자료
+### 참고자료
 
 * [밸리데이션 예시](http://thelucid.com/2010/01/08/sexy-validation-in-edge-rails-rails-3/)
 
@@ -265,16 +265,18 @@ validates :email_confirmation, presence: true
 
 ### exclusion
 
-````validates :name, exclustion: { in: %w(admin root) }
-
+````ruby
+    validates :name, exclustion: { in: %w(admin root) }
+````
 
 rails g migration add_language_to_person language:string
 
 rake db:migrate
 
 person.rb
-````validates :language, inclusion: { in: I18n.available_locales.map(&:to_s) }
-
+````ruby
+    validates :language, inclusion: { in: I18n.available_locales.map(&:to_s) }
+````
 
 
 presence 를 모델관계에 쓰는 예시
